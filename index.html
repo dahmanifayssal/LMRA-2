@@ -1,3 +1,4 @@
+<!-- © 2025 Fayssal Dahmani — LMRA Checklist — Tous droits réservés / Alle rechten voorbehouden -->
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -635,9 +636,109 @@
   .quiz-feedback.show { display: block; }
   .quiz-feedback.ok { background: #f0fdf4; color: #166534; border: 1px solid #86efac; }
   .quiz-feedback.ko { background: #fff7ed; color: #9a3412; border: 1px solid #fdba74; }
+
+  /* ── PASSWORD SCREEN ── */
+  #passwordScreen {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: var(--primary);
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+  }
+  .pwd-box {
+    background: #fff;
+    border-radius: 12px;
+    padding: 40px 36px;
+    max-width: 380px;
+    width: 90%;
+    text-align: center;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.25);
+  }
+  .pwd-logo {
+    background: var(--primary);
+    color: #fff;
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 18px;
+    font-weight: 600;
+    padding: 8px 18px;
+    border-radius: 6px;
+    display: inline-block;
+    margin-bottom: 20px;
+    letter-spacing: 0.05em;
+  }
+  .pwd-title {
+    font-size: 17px;
+    font-weight: 600;
+    color: var(--primary);
+    margin-bottom: 6px;
+  }
+  .pwd-subtitle {
+    font-size: 13px;
+    color: var(--muted);
+    margin-bottom: 24px;
+  }
+  .pwd-input {
+    width: 100%;
+    padding: 11px 16px;
+    border: 1.5px solid var(--border);
+    border-radius: 8px;
+    font-size: 15px;
+    font-family: "IBM Plex Sans", sans-serif;
+    outline: none;
+    margin-bottom: 12px;
+    text-align: center;
+    letter-spacing: 0.05em;
+  }
+  .pwd-input:focus { border-color: var(--primary-light); box-shadow: 0 0 0 3px rgba(37,99,168,0.12); }
+  .pwd-btn {
+    width: 100%;
+    padding: 12px;
+    background: var(--primary);
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 15px;
+    font-weight: 600;
+    font-family: "IBM Plex Sans", sans-serif;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .pwd-btn:hover { background: var(--primary-light); }
+  .pwd-error {
+    color: var(--danger);
+    font-size: 13px;
+    margin-top: 10px;
+    display: none;
+  }
+  .pwd-copyright {
+    color: rgba(255,255,255,0.5);
+    font-size: 11px;
+    margin-top: 20px;
+    text-align: center;
+  }
+
 </style>
 </head>
 <body>
+
+<!-- PASSWORD SCREEN -->
+<div id="passwordScreen">
+  <div class="pwd-box">
+    <div class="pwd-logo">LMRA</div>
+    <div class="pwd-title">Accès sécurisé / Beveiligde toegang</div>
+    <div class="pwd-subtitle">Entrez le code d'accès pour continuer.<br>Voer de toegangscode in om verder te gaan.</div>
+    <input type="password" class="pwd-input" id="pwdInput" placeholder="Code d'accès..." onkeydown="if(event.key==='Enter') checkPassword()">
+    <button class="pwd-btn" onclick="checkPassword()">Accéder / Toegang</button>
+    <div class="pwd-error" id="pwdError">
+      ❌ Code incorrect. Veuillez réessayer. / Onjuiste code. Probeer opnieuw.
+    </div>
+  </div>
+  <div class="pwd-copyright">© 2025 Fayssal Dahmani — Tous droits réservés / Alle rechten voorbehouden</div>
+</div>
+
 
 <!-- HEADER -->
 <div class="header">
@@ -1502,71 +1603,3 @@ function handleSubmit(e) {
   document.getElementById('form_lieu').value = document.getElementById('f_lieu').value;
   const typeVal = document.getElementById('f_type').value;
   const typeAutre = document.getElementById('f_type_autre').value.trim();
-  document.getElementById('form_type').value = (typeVal === 'autre' && typeAutre) ? typeAutre : typeVal;
-  document.getElementById('form_desc').value = document.getElementById('f_desc').value;
-  document.getElementById('form_npers').value = document.getElementById('f_npers').value;
-  document.getElementById('form_resultat').value = nokC === 0 ? 'FEU VERT - Travail autorisé' : 'STOP - Risques identifiés (' + nokC + ' points NOK)';
-  document.getElementById('form_ok').value = okC;
-  document.getElementById('form_nok').value = nokC;
-  document.getElementById('form_na').value = naC;
-  document.getElementById('form_detail_nok').value = nokDetails.join(' | ');
-  document.getElementById('form_remarques').value = document.getElementById('f_remarques').value;
-  document.getElementById('form_signature').value = canvas.toDataURL();
-  document.getElementById('form_replyto').value = emailCP;
-  document.getElementById('form_subject').value = 'LMRA – ' + document.getElementById('f_nom').value + ' – ' + document.getElementById('f_date').value + ' – ' + (nokC === 0 ? '✅ OK' : '⚠️ NOK');
-
-  const form = document.getElementById('lmraForm');
-  const sendBtn = document.getElementById('sendBtn');
-  sendBtn.disabled = true;
-  sendBtn.textContent = currentLang === 'fr' ? 'Envoi en cours...' : 'Verzenden...';
-
-  const formData = new FormData(form);
-  fetch(form.action, {
-    method: 'POST',
-    body: formData,
-    headers: { 'Accept': 'application/json' }
-  }).then(r => {
-    if (r.ok) {
-      goToPage(4);
-    } else {
-      alert(currentLang === 'fr'
-        ? "Erreur lors de l'envoi. Vérifiez votre configuration Formspree."
-        : "Fout bij verzending. Controleer uw Formspree-configuratie.");
-      sendBtn.disabled = false;
-      sendBtn.textContent = currentLang === 'fr' ? 'Envoyer au conseiller' : 'Versturen naar adviseur';
-    }
-  }).catch(() => {
-    alert(currentLang === 'fr'
-      ? "Erreur réseau. Vérifiez votre connexion internet."
-      : "Netwerkfout. Controleer uw internetverbinding.");
-    sendBtn.disabled = false;
-  });
-}
-
-function resetForm() {
-  checkState = {};
-  quizAnswers = {};
-  currentSlide = 0;
-  document.getElementById('trainingDone').style.display = 'none';
-  document.getElementById('lmraForm').reset();
-  clearSig();
-  goToPage(0);
-  goToSlide(0);
-  document.querySelectorAll('.quiz-option').forEach(o => {
-    o.className = 'quiz-option';
-    o.onclick = o.getAttribute('onclick') ? new Function(o.getAttribute('onclick')) : null;
-  });
-  // Rebuild quiz
-  location.reload();
-}
-
-// ── INIT ──
-buildChecklist();
-// Set today's date
-const today = new Date();
-document.getElementById('f_date').value = today.toISOString().split('T')[0];
-const now = today.toTimeString().slice(0,5);
-document.getElementById('f_heure').value = now;
-</script>
-</body>
-</html>
