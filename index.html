@@ -1079,10 +1079,7 @@
             <label><span class="t-fr">Email du conseiller en prévention</span><span class="t-nl" style="display:none">E-mail preventieadviseur</span><span class="req">*</span></label>
             <input type="email" id="f_email_cp" value="fayssal.dahmani@gmail.com" readonly style="background:#f4f6f9;color:var(--muted);cursor:not-allowed;">
           </div>
-          <div class="field-group">
-            <label><span class="t-fr">Email du travailleur (copie)</span><span class="t-nl" style="display:none">E-mail werknemer (kopie)</span></label>
-            <input type="email" id="f_email_worker" placeholder="travailleur@entreprise.be">
-          </div>
+
         </div>
 
         <div class="field-group">
@@ -1100,7 +1097,6 @@
           <input type="hidden" name="lieu" id="form_lieu">
           <input type="hidden" name="type_travail" id="form_type">
           <input type="hidden" name="description" id="form_desc">
-          <input type="hidden" name="bon_travail" id="form_bt">
           <input type="hidden" name="nombre_personnes" id="form_npers">
           <input type="hidden" name="resultat_global" id="form_resultat">
           <input type="hidden" name="points_ok" id="form_ok">
@@ -1110,7 +1106,6 @@
           <input type="hidden" name="remarques" id="form_remarques">
           <input type="hidden" name="signature_base64" id="form_signature">
           <input type="hidden" name="_replyto" id="form_replyto">
-          <input type="hidden" name="email_copie" id="form_email_copie">
 
           <div style="display:flex;gap:12px;justify-content:space-between;flex-wrap:wrap;">
             <button type="button" class="btn btn-secondary" onclick="goToPage(2)">
@@ -1509,7 +1504,6 @@ function handleSubmit(e) {
   const typeAutre = document.getElementById('f_type_autre').value.trim();
   document.getElementById('form_type').value = (typeVal === 'autre' && typeAutre) ? typeAutre : typeVal;
   document.getElementById('form_desc').value = document.getElementById('f_desc').value;
-  document.getElementById('form_bt').value = document.getElementById('f_bt').value;
   document.getElementById('form_npers').value = document.getElementById('f_npers').value;
   document.getElementById('form_resultat').value = nokC === 0 ? 'FEU VERT - Travail autorisé' : 'STOP - Risques identifiés (' + nokC + ' points NOK)';
   document.getElementById('form_ok').value = okC;
@@ -1519,7 +1513,6 @@ function handleSubmit(e) {
   document.getElementById('form_remarques').value = document.getElementById('f_remarques').value;
   document.getElementById('form_signature').value = canvas.toDataURL();
   document.getElementById('form_replyto').value = emailCP;
-  document.getElementById('form_email_copie').value = document.getElementById('f_email_worker').value;
   document.getElementById('form_subject').value = 'LMRA – ' + document.getElementById('f_nom').value + ' – ' + document.getElementById('f_date').value + ' – ' + (nokC === 0 ? '✅ OK' : '⚠️ NOK');
 
   const form = document.getElementById('lmraForm');
